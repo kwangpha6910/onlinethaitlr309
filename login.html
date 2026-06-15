@@ -95,30 +95,32 @@
         }
 
       function submitData() {
-            submitBtn.innerText = 'กำลังบันทึก...';
-            submitBtn.disabled = true;
+    submitBtn.innerText = 'กำลังบันทึก...';
+    submitBtn.disabled = true;
 
-            // บันทึกข้อมูล
-            sessionStorage.setItem('studentName', document.getElementById('studentName').value);
-            sessionStorage.setItem('studentRoom', document.getElementById('studentRoom').value);
-            sessionStorage.setItem('studentNumber', document.getElementById('studentNumber').value);
+    // บันทึกข้อมูล
+    sessionStorage.setItem('studentName', document.getElementById('studentName').value);
+    sessionStorage.setItem('studentRoom', document.getElementById('studentRoom').value);
+    sessionStorage.setItem('studentNumber', document.getElementById('studentNumber').value);
 
-            fetch(scriptURL, { 
-                method: 'POST', 
-                body: new FormData(form),
-                mode: 'no-cors' 
-            })
-            .then(() => {
-                // 🌟 แก้ตรงนี้: ใส่ setTimeout เพื่อให้เวลาเครื่องบันทึกข้อมูลก่อนเด้ง
-                setTimeout(() => {
-                    window.location.href = 'index.html'; 
-                }, 300); // รอ 300 มิลลิวินาที (แป๊บเดียวแต่ชัวร์)
-            })
-            .catch(error => {
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่ครับ');
-                submitBtn.innerText = 'ถูกต้อง ยืนยันเลย!';
-                submitBtn.disabled = false;
-            });
+    // ตรวจสอบว่าบันทึกสำเร็จไหม (ถ้าสำเร็จค่อยเปลี่ยนหน้า)
+    if(sessionStorage.getItem('studentName')) {
+        fetch(scriptURL, { 
+            method: 'POST', 
+            body: new FormData(form),
+            mode: 'no-cors' 
+        })
+        .then(() => {
+            window.location.href = 'index.html'; 
+        })
+        .catch(() => {
+            alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+            submitBtn.innerText = 'ถูกต้อง ยืนยันเลย!';
+            submitBtn.disabled = false;
+        });
+    } else {
+        alert("ขออภัย บราวเซอร์ของคุณไม่อนุญาตให้บันทึกข้อมูล (กรุณาปิดโหมดส่วนตัว)");
+    }
         }
     </script>
 </body>
