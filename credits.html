@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <script>
-        if (!localStorage.getItem('studentName')) {
-            window.location.href = 'login.html';
-        }
-    </script>
+    // 🌟 เช็ก sessionStorage แทน เพื่อบังคับล็อกอินใหม่ทุกครั้งที่เปิดแท็บใหม่
+    if (!sessionStorage.getItem('studentName')) {
+        window.location.href = 'login.html';
+    }
+</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ผู้จัดทำ | ภาษาไทย ป.6</title>
     <link rel="stylesheet" href="style.css">
