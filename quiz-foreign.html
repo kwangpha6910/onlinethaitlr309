@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>นักสืบแกะรอยคำต่างประเทศ | ภาษาไทย ป.6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .detective-wrapper {
+            max-width: 850px;
+            margin: 2rem auto;
+            background: #0f172a; /* สีพื้นหลังสไตล์ห้องสืบสวน */
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 2px solid #334155;
+            color: #f8fafc;
+            font-family: 'Prompt', sans-serif;
+            position: relative;
+        }
+
+        /* ลายน้ำตารางด้านหลัง */
+        .detective-wrapper::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px; z-index: 0; pointer-events: none;
+        }
+
+        .quiz-content { position: relative; z-index: 1; padding: 2rem; }
+
+        .detective-header { text-align: center; padding: 3rem 1rem; }
+        .detective-header h1 { color: #fbbf24; font-size: 2.5rem; text-shadow: 0 0 15px rgba(251, 191, 36, 0.4); margin-bottom: 1rem;}
+        
+        /* สถานะด้านบน */
+        .status-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.4); padding: 1rem 2rem; border-radius: 12px; margin-bottom: 2rem;
+            border: 1px solid #475569; font-size: 1.2rem;
+        }
+        .status-bar .case-num { color: #38bdf8; font-weight: 700; }
+        .status-bar .score-num { color: #4ade80; font-weight: 700; }
+
+        /* แฟ้มคดี (คำถาม) */
+        .case-file {
+            background: #fef3c7; color: #1e293b; padding: 2.5rem; border-radius: 8px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.05), 5px 10px 20px rgba(0,0,0,0.3);
+            transform: rotate(-1deg); margin: 0 auto 2.5rem auto; max-width: 600px;
+            position: relative; border-left: 15px solid #d97706; /* สันแฟ้ม */
+        }
+        .case-file::after {
+            content: 'CONFIDENTIAL'; position: absolute; top: 10px; right: 10px;
+            color: #ef4444; border: 2px solid #ef4444; padding: 2px 8px; font-weight: 900;
+            transform: rotate(15deg); opacity: 0.3; letter-spacing: 2px;
+        }
+        .suspect-icon { font-size: 4rem; text-align: center; margin-bottom: 1rem; }
+        .target-word { font-size: 3rem; font-weight: 800; text-align: center; color: #991b1b; margin-bottom: 1rem; text-decoration: underline; text-decoration-style: dashed; }
+        .case-desc { text-align: center; font-size: 1.2rem; font-weight: 600; color: #475569; }
+
+        /* ตราประทับ (Stamp Animation) */
+        .stamp-result {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(3);
+            opacity: 0; font-size: 3rem; font-weight: 900; padding: 15px 30px; border-radius: 12px;
+            pointer-events: none; z-index: 10; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase; border-width: 6px; border-style: solid;
+        }
+        .stamp-result.show { transform: translate(-50%, -50%) scale(1) rotate(-10deg); opacity: 1; }
+        .stamp-result.correct { color: #16a34a; border-color: #16a34a; text-shadow: 0 0 5px rgba(22,163,74,0.3); box-shadow: inset 0 0 10px rgba(22,163,74,0.2); }
+        .stamp-result.wrong { color: #dc2626; border-color: #dc2626; text-shadow: 0 0 5px rgba(220,38,38,0.3); box-shadow: inset 0 0 10px rgba(220,38,38,0.2); }
+
+        /* ปุ่มเลือกประเทศ (ธงชาติ) */
+        .countries-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .country-btn {
+            background: #1e293b; border: 2px solid #334155; border-radius: 20px; padding: 1.5rem;
+            color: white; font-family: 'Prompt', sans-serif; cursor: pointer; transition: all 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .country-btn:hover:not(:disabled) {
+            background: #334155; border-color: #fbbf24; transform: translateY(-5px); box-shadow: 0 10px 25px rgba(251,191,36,0.2);
+        }
+        .country-flag { font-size: 3.5rem; }
+        .country-name { font-size: 1.2rem; font-weight: 600; }
+
+        /* กล่องบันทึกนักสืบ (เฉลย) */
+        .detective-notes {
+            background: rgba(30, 41, 59, 0.8); border-left: 5px solid #fbbf24; padding: 1.5rem;
+            border-radius: 0 12px 12px 0; margin-top: 2rem; display: none; animation: fadeIn 0.5s;
+        }
+        .note-title { color: #fbbf24; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 10px; }
+        .note-text { color: #cbd5e1; line-height: 1.6; }
+
+        .action-area { text-align: center; margin-top: 2rem; display: none; }
+        .btn-spy { background: #fbbf24; color: #0f172a; padding: 1rem 3rem; border: none; border-radius: 50px; font-weight: 700; font-size: 1.2rem; font-family: 'Prompt', sans-serif; cursor: pointer; box-shadow: 0 5px 15px rgba(251,191,36,0.3); transition: 0.3s; }
+        .btn-spy:hover { transform: scale(1.05); background: #f59e0b; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .countries-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .target-word { font-size: 2.2rem; }
+            .case-file { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">สนุกเรียน ภาษาไทย ป.6</div>
+            <ul class="nav-links">
+                <li><a href="index.html">หน้าหลัก</a></li>
+                <li><a href="foreign-words.html">กลับไปบทเรียน</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="detective-wrapper">
+            <div class="quiz-content">
+
+                <div id="startScreen" class="detective-header" style="display: block;">
+                    <div style="font-size: 6rem; margin-bottom: 1rem; animation: bounce 2s infinite;">🕵️‍♂️</div>
+                    <h1>ภารกิจ: นักสืบแกะรอยข้ามโลก</h1>
+                    <p style="font-size: 1.2rem; color: #94a3b8; margin-bottom: 2rem; max-width: 600px; margin-inline: auto;">
+                        สายลับ ป.6 ทุกคน! เราพบ "คำศัพท์ต้องสงสัย" แฝงตัวเข้ามาในภาษาไทย 10 คำ 
+                        หน้าที่ของคุณคือตรวจสอบประวัติ และประทับตราว่าพวกเขาเดินทางมาจากประเทศใด!
+                    </p>
+                    <button class="btn-spy" onclick="startCase()">🔍 รับแฟ้มคดี</button>
+                </div>
+
+                <div id="quizScreen" style="display: none;">
+                    
+                    <div class="status-bar">
+                        <div class="case-num">📂 แฟ้มคดีที่: <span id="qCount">1/10</span></div>
+                        <div class="score-num">🎯 ผลงาน: <span id="score">0</span> แต้ม</div>
+                    </div>
+
+                    <div class="case-file" id="caseFile">
+                        <div id="suspectIcon" class="suspect-icon">🍜</div>
+                        <div class="case-desc">ผู้ต้องสงสัยชื่อ:</div>
+                        <div id="targetWord" class="target-word">ก๋วยเตี๋ยว</div>
+                        
+                        <div id="stamp" class="stamp-result">ถูกต้อง!</div>
+                    </div>
+
+                    <div id="optionsGrid" class="countries-grid">
+                        </div>
+
+                    <div id="detectiveNotes" class="detective-notes">
+                        <div class="note-title">📝 บันทึกการสืบสวน:</div>
+                        <div id="noteText" class="note-text">คำอธิบาย...</div>
+                    </div>
+
+                    <div id="nextArea" class="action-area">
+                        <button class="btn-spy" onclick="nextCase()">สืบคดีต่อไป ➔</button>
+                    </div>
+
+                </div>
+
+                <div id="resultScreen" class="detective-header" style="display: none;">
+                    <div id="rankIcon" style="font-size: 6rem; margin-bottom: 1rem;">🎖️</div>
+                    <h1 id="rankTitle">สุดยอดสายลับ!</h1>
+                    <p style="font-size: 1.2rem; color: #94a3b8; margin-bottom: 1rem;">ปิดคดีสำเร็จ ตรวจสอบประวัติคำศัพท์ครบถ้วน</p>
+                    <div style="font-size: 4rem; color: #4ade80; font-weight: 800; margin-bottom: 2rem;">
+                        <span id="finalScore">0</span> / 10
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn-spy" style="background: #334155; color: white;" onclick="location.reload()">🔄 สืบคดีใหม่อีกครั้ง</button>
+                        
+                        <button id="goToNounBtn" class="btn-spy" style="display: none;" onclick="window.location.href='quiz-nouns.html'">➡️ ไปทำแบบฝึกหัดคำนาม</button>
+                        <button id="submitScoreBtn" class="btn-spy" style="display: none;" onclick="submitBothScores()">📤 ส่งรายงานให้ผู้บังคับบัญชา</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 📚 แฟ้มคดีลับ (10 คำถาม)
+        const cases = [
+            { word: "ก๋วยเตี๋ยว", icon: "🍜", answer: "cn", desc: "อาหารเส้น ยอดฮิตที่มีต้นกำเนิดจากชาวจีน" },
+            { word: "คอมพิวเตอร์", icon: "💻", answer: "gb", desc: "ทับศัพท์เทคโนโลยี เป๊ะๆ แบบนี้ มาจากภาษาอังกฤษแน่นอน" },
+            { word: "บรรทม", icon: "🛌", answer: "kh", desc: "มีคำว่า 'บรร' นำหน้า และเป็นคำราชาศัพท์ เป็นเอกลักษณ์ของภาษาเขมร" },
+            { word: "กษัตริย์", icon: "👑", answer: "in", desc: "มีตัวการันต์ และตัว ษ. ฤ. สะกดซับซ้อน เป็นคำยืมจากสันสกฤต" },
+            { word: "ซาลาเปา", icon: "🥟", answer: "cn", desc: "ชื่อของกินพื้นบ้าน เป็นคำที่ยืมมาจากภาษาจีนโดยตรง" },
+            { word: "ฟุตบอล", icon: "⚽", answer: "gb", desc: "ชื่อกีฬาตะวันตก นำมาทับศัพท์ให้อ่านง่ายสไตล์ภาษาอังกฤษ" },
+            { word: "ตำรวจ", icon: "👮", answer: "kh", desc: "คำที่ขึ้นต้นด้วย 'ตำ-' และสะกดด้วย จ. เป็นลักษณะของคำเขมร" },
+            { word: "เมฆ", icon: "☁️", answer: "in", desc: "สะกดด้วยตัว ฆ. ระฆัง ซึ่งเป็นพยัญชนะในกลุ่มบาลี-สันสกฤต" },
+            { word: "คลินิก", icon: "🏥", answer: "gb", desc: "มีพยัญชนะควบกล้ำ คล. และทับศัพท์จากคำว่า Clinic (ภาษาอังกฤษ)" },
+            { word: "ถนน", icon: "🛣️", answer: "kh", desc: "อักษรนำ และมักสะกดด้วยตัว น. เป็นเอกลักษณ์การสร้างคำของภาษาเขมร" }
+        ];
+
+        // ตัวเลือกประเทศ
+        const countries = [
+            { id: "cn", flag: "🇨🇳", name: "ภาษาจีน" },
+            { id: "gb", flag: "🇬🇧", name: "ภาษาอังกฤษ" },
+            { id: "in", flag: "🇮🇳", name: "บาลี-สันสกฤต" },
+            { id: "kh", flag: "🇰🇭", name: "ภาษาเขมร" }
+        ];
+
+        let current = 0; let score = 0;
+        const screens = { start: document.getElementById('startScreen'), quiz: document.getElementById('quizScreen'), result: document.getElementById('resultScreen') };
+        const el = { icon: document.getElementById('suspectIcon'), word: document.getElementById('targetWord'), qCount: document.getElementById('qCount'), score: document.getElementById('score'), options: document.getElementById('optionsGrid'), notes: document.getElementById('detectiveNotes'), noteText: document.getElementById('noteText'), nextBtn: document.getElementById('nextArea'), stamp: document.getElementById('stamp'), caseFile: document.getElementById('caseFile') };
+
+        function startCase() { screens.start.style.display = 'none'; screens.quiz.style.display = 'block'; loadCase(); }
+
+        function loadCase() {
+            const currentCase = cases[current]; el.word.innerText = currentCase.word; el.icon.innerText = currentCase.icon; el.qCount.innerText = `${current + 1}/10`;
+            el.notes.style.display = 'none'; el.nextBtn.style.display = 'none'; el.stamp.className = 'stamp-result'; el.options.innerHTML = '';
+            countries.forEach(country => {
+                const btn = document.createElement('button'); btn.className = 'country-btn'; btn.innerHTML = `<span class="country-flag">${country.flag}</span><span class="country-name">${country.name}</span>`;
+                btn.onclick = () => checkCase(country.id, btn); el.options.appendChild(btn);
+            });
+        }
+
+        function checkCase(selectedId, btnElement) {
+            const currentCase = cases[current]; const allBtns = el.options.querySelectorAll('.country-btn');
+            allBtns.forEach(b => b.disabled = true);
+            if (selectedId === currentCase.answer) {
+                score++; el.score.innerText = score; el.stamp.innerText = "✅ สายลับยืนยัน!"; el.stamp.className = 'stamp-result show correct'; btnElement.style.background = '#16a34a'; btnElement.style.borderColor = '#4ade80';
+            } else {
+                el.stamp.innerText = "❌ ข้อมูลผิดพลาด!"; el.stamp.className = 'stamp-result show wrong'; btnElement.style.background = '#991b1b'; btnElement.style.borderColor = '#ef4444';
+            }
+            el.noteText.innerText = currentCase.desc; el.notes.style.display = 'block'; el.nextBtn.style.display = 'block';
+            if(current === cases.length - 1) { el.nextBtn.querySelector('button').innerText = "📋 ปิดแฟ้มสรุปคดี"; }
+        }
+
+        function nextCase() { current++; if (current < cases.length) { loadCase(); } else { showResult(); } }
+
+        function showResult() {
+            screens.quiz.style.display = 'none'; screens.result.style.display = 'block';
+            document.getElementById('finalScore').innerText = score;
+            
+            // 🌟 1. บันทึกคะแนนของวิชานี้ไว้ในเครื่อง
+            localStorage.setItem('scoreForeign', score);
+            localStorage.setItem('isForeignDone', 'true');
+
+            // 🌟 2. ระบบเช็กว่าทำวิชาคำนามหรือยัง?
+            if (localStorage.getItem('isNounDone') === 'true') {
+                document.getElementById('submitScoreBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('goToNounBtn').style.display = 'inline-block';
+            }
+
+            const title = document.getElementById('rankTitle'); const icon = document.getElementById('rankIcon');
+            if (score >= 8) { title.innerText = "🕵️‍♂️ ยอดนักสืบระดับโลก!"; icon.innerText = "🏅"; } 
+            else if (score >= 5) { title.innerText = "🔍 สายลับมือฉมัง!"; icon.innerText = "💼"; } 
+            else { title.innerText = "📝 สายลับฝึกหัด (ต้องฝึกเพิ่มนะ)!"; icon.innerText = " Rookie"; }
+        }
+
+        // 🌟 URL ระบบหลังบ้าน 🌟
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzxQw8OsLmQrsnF17BR_FBvHGSd8mK8dhFZC6ECLA5eAg3fcoDTLP15IPvpQheuPnUU2g/exec';
+
+        function submitBothScores() {
+            const btn = document.getElementById('submitScoreBtn');
+            btn.innerText = 'กำลังส่งรายงาน...'; btn.disabled = true;
+
+            const name = localStorage.getItem('studentName') || 'ไม่ได้ล็อกอิน';
+            const room = localStorage.getItem('studentRoom') || '-';
+            const number = localStorage.getItem('studentNumber') || '-';
+            const scoreN = localStorage.getItem('scoreNoun') || '0';
+            const scoreF = localStorage.getItem('scoreForeign') || '0';
+
+            const formData = new FormData();
+            formData.append('name', name); formData.append('room', room); formData.append('number', number);
+            formData.append('quizName', '🎯 ทำแบบฝึกหัดครบ 2 บท');
+            formData.append('scoreNoun', scoreN); 
+            formData.append('scoreForeign', scoreF); 
+
+            fetch(GOOGLE_SHEET_URL, { method: 'POST', body: formData, mode: 'no-cors' })
+            .then(() => {
+                btn.innerText = '✅ ส่งรายงานสำเร็จ!'; btn.style.background = '#16a34a';
+                localStorage.removeItem('isNounDone'); localStorage.removeItem('isForeignDone');
+            })
+            .catch(() => {
+                alert('ส่งรายงานไม่สำเร็จ กรุณาลองใหม่'); btn.innerText = '📤 ส่งรายงานให้ผู้บังคับบัญชา'; btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>

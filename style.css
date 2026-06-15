@@ -1,0 +1,874 @@
+/* นำเข้าฟอนต์และตั้งค่าพื้นฐาน */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary: #0072ff;
+    --primary-light: #00c6ff;
+    --accent: #ff512f;
+    --accent-light: #dd2476;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Prompt', sans-serif;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle at top right, #e0f2fe 0%, transparent 40%),
+                      radial-gradient(circle at bottom left, #ffe4e6 0%, transparent 40%);
+    color: var(--text-main);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* แอนิเมชันตอนโหลดหน้าใหม่ (Page Transition) */
+    animation: smoothLoad 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes smoothLoad {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Header แบบ Glassmorphism */
+header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--primary), var(--primary-light));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 2.5rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* เอฟเฟกต์ขีดเส้นใต้เมนูแบบเก๋ๆ */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: -5px;
+    left: 0;
+    background: linear-gradient(45deg, var(--primary), var(--primary-light));
+    transition: width 0.3s ease;
+    border-radius: 2px;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--primary);
+}
+
+.nav-links a:hover::after, .nav-links a.active::after {
+    width: 100%;
+}
+
+main { flex: 1; }
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 5%;
+}
+
+/* Hero Section ใหม่ อลังการขึ้น */
+.hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border-radius: 24px;
+    margin-bottom: 4rem;
+    box-shadow: 0 20px 40px rgba(0, 198, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 20%);
+    background-size: 20px 20px;
+    animation: rotate 60s linear infinite;
+    z-index: 1;
+}
+
+@keyframes rotate { 100% { transform: rotate(360deg); } }
+
+.hero h1, .hero p { position: relative; z-index: 2; }
+.hero h1 { font-size: 2.8rem; margin-bottom: 1rem; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.hero p { font-size: 1.2rem; opacity: 0.9; }
+
+/* การ์ดบทเรียนแบบ Modern 3D Hover */
+.lesson-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+.card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.card-img {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.card-img.bg-1 { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+.card-img.bg-2 { background: linear-gradient(135deg, var(--accent-light), var(--accent)); }
+
+.card-content { padding: 2rem; }
+.card-content h3 { color: var(--text-main); font-size: 1.4rem; margin-bottom: 0.8rem; }
+.card-content p { color: var(--text-muted); margin-bottom: 1.5rem; }
+
+/* ปุ่มสุดล้ำ */
+.btn {
+    display: inline-block;
+    background: linear-gradient(45deg, var(--accent), var(--accent-light));
+    color: white;
+    padding: 0.8rem 1.8rem;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(221, 36, 118, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(221, 36, 118, 0.5);
+}
+
+.btn-outline {
+    display: inline-block;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 0.8rem 1.8rem;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+}
+
+/* ส่วนเนื้อหาบทเรียนย่อย */
+.lesson-content h1 { text-align: center; margin-bottom: 1.5rem; color: var(--primary); }
+.intro-text { text-align: center; font-size: 1.2rem; margin-bottom: 3rem; color: var(--text-muted); }
+
+/* โครงสร้างกล่องเนื้อหา (จัดการให้ยืดและดันได้สมบูรณ์) */
+.content-box {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    border-left: 6px solid var(--primary-light);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease;
+    
+    display: flex; /* เพิ่มคุณสมบัติ Flexbox */
+    flex-direction: column; /* ให้เนื้อหาเรียงจากบนลงล่าง */
+    height: 100%; /* บังคับให้กล่องสูงเต็มพื้นที่ที่ Grid กำหนด */
+}
+
+.content-box:hover { transform: translateX(10px); }
+
+/* 👇 1. แก้ไขให้ล็อกการแสดงผล 2 กล่องต่อแถว และลบ align-items: start; ออก 👇 */
+.grid-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* บังคับ 2 คอลัมน์ (สั้นคู่สั้น, ยาวคู่ยาว) */
+    gap: 2rem;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    background: #1a252f;
+    color: #bdc3c7;
+    font-size: 0.9rem;
+}
+
+/* Hamburger Menu */
+.hamburger { display: none; cursor: pointer; }
+.bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: var(--text-main); transition: all 0.3s ease; }
+
+@media (max-width: 768px) {
+    /* 👇 2. จัดการหน้าจอมือถือให้แสดง 1 กล่องต่อแถว 👇 */
+    .grid-content {
+        grid-template-columns: 1fr;
+    }
+
+    .hamburger { display: block; }
+    .nav-links {
+        position: absolute;
+        left: 0;
+        top: 100%;
+        flex-direction: column;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        width: 100%;
+        text-align: center;
+        transition: 0.4s ease-in-out;
+        box-shadow: 0 10px 10px rgba(0,0,0,0.05);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-20px);
+    }
+    .nav-links.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    .nav-links li { margin: 1.5rem 0; }
+    .hero h1 { font-size: 2rem; }
+    .navigation-buttons { flex-direction: column; gap: 1rem; text-align: center; }
+}
+
+/* =========================================
+   สไตล์เพิ่มเติมสำหรับจัดการเนื้อหาที่อ่านยาก
+   ========================================= */
+
+/* กล่องไฮไลท์จุดสังเกต */
+.highlight-box {
+    background-color: rgba(0, 114, 255, 0.04);
+    padding: 1.2rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    border-left: 4px solid var(--primary);
+}
+
+.highlight-box h4 {
+    color: var(--text-main);
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+/* จัดการ List แบบมีสไตล์ */
+.feature-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.feature-list li {
+    position: relative;
+    padding-left: 1.8rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* เปลี่ยนจุด Bullet ธรรมดาให้เป็นเครื่องหมายขีด (Dash) ล้ำๆ */
+.feature-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 12px;
+    height: 3px;
+    background-color: var(--accent);
+    border-radius: 2px;
+}
+
+.feature-list li strong {
+    color: var(--text-main);
+}
+
+/* กล่องตัวอย่างคำศัพท์ */
+.example-box {
+    background: linear-gradient(to right, #fff4e6, #ffffff);
+    color: var(--text-main);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ffe8cc;
+    font-size: 1.05rem;
+    margin-top: auto; /* เวทมนตร์ Flexbox ดันกล่องลงล่างสุด */
+}
+
+/* =========================================
+   หน้า Login & Modal ยืนยันข้อมูล
+   ========================================= */
+
+/* จัดหน้า Login ให้อยู่กลางจอ */
+.login-page {
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+}
+
+.login-card {
+    background: var(--card-bg);
+    padding: 3rem 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 114, 255, 0.1);
+    border: 1px solid rgba(255,255,255,0.6);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header h2 {
+    color: var(--primary);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.login-header p {
+    color: var(--text-muted);
+}
+
+/* ฟอร์มกรอกข้อมูล */
+.input-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.input-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.input-row .input-group {
+    flex: 1;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-family: 'Prompt', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+}
+
+.input-group input:focus, .input-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(0, 114, 255, 0.1);
+}
+
+.btn-full {
+    width: 100%;
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+/* =========================================
+   กล่องข้อความยืนยัน (Modal Overlay)
+   ========================================= */
+.modal-overlay {
+    display: none; /* ซ่อนไว้ก่อน จะแสดงผ่าน JS */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-box {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.modal-box h3 {
+    color: var(--text-main);
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+}
+
+.confirm-details {
+    background: var(--bg-color);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: left;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary);
+}
+
+.confirm-details p {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.confirm-details p:last-child {
+    margin-bottom: 0;
+}
+
+.confirm-details span {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.modal-warning {
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 0.8rem;
+    font-size: 1rem;
+    margin-top: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* =========================================
+   สไตล์ส่วนประวัติผู้จัดทำเพิ่มเติม (Profile Page)
+   ========================================= */
+
+.profile-container {
+    max-width: 950px;
+    margin: 0 auto;
+    animation: smoothLoad 0.6s ease forwards;
+}
+
+/* กล่องประวัติขนาดใหญ่ระดับ Expert */
+.profile-header-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    padding: 3.5rem;
+    display: flex;
+    gap: 3.5rem;
+    border: 1px solid rgba(255,255,255,0.6);
+    align-items: flex-start;
+}
+
+/* กล่องใส่รูปภาพกรอบหรู */
+.profile-image-wrapper {
+    flex-shrink: 0;
+    width: 240px;
+    height: 300px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e0f2fe 0%, #ffe4e6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.profile-image-placeholder {
+    font-size: 5rem;
+    color: var(--primary);
+}
+
+.profile-image-real {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ส่วนข้อความ */
+.profile-main-info {
+    flex: 1;
+}
+
+.profile-main-info h2 {
+    font-size: 2.2rem;
+    color: var(--text-main);
+    margin-bottom: 0.2rem;
+}
+
+.profile-tag {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-divider {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 1.5rem 0;
+}
+
+.bio-section {
+    margin-bottom: 1.8rem;
+}
+
+.bio-section h4 {
+    color: var(--text-main);
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+}
+
+.bio-section ul {
+    padding-left: 1.5rem;
+    color: var(--text-muted);
+}
+
+.bio-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.bio-section p {
+    color: var(--text-muted);
+    text-align: justify;
+}
+
+/* ตกแต่งปุ่มขนาดเล็กในหน้าหลัก Credits */
+.btn-sm {
+    padding: 0.5rem 1.3rem;
+    font-size: 0.9rem;
+    margin-top: 0.8rem;
+}
+
+.profile-flex {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.profile-avatar {
+    font-size: 2.8rem;
+    background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.profile-brief {
+    flex: 1;
+}
+
+/* 📱 ระบบจัดระเบียบหน้าจอเมื่อแสดงผลบนอุปกรณ์มือถือ */
+@media (max-width: 768px) {
+    .profile-header-card {
+        flex-direction: column;
+        align-items: center;
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+    }
+    
+    .profile-image-wrapper {
+        width: 200px;
+        height: 250px;
+    }
+    
+    .bio-section ul {
+        list-style-position: inside;
+        padding-left: 0;
+    }
+    
+    .profile-flex {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* =========================================
+   สไตล์สำหรับจัดการรูปโปรไฟล์จริงขนาดเล็กใน Avatar
+   ========================================= */
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* สั่งให้รูปตัดขอบเป็นวงกลมเรียบเนียน */
+    object-fit: cover;  /* ดึงรูปให้เต็มกรอบอวาต้าอัตโนมัติ โดยไม่เบี้ยวและไม่ยืด */
+    display: block;
+}
+/* =========================================
+   Premium Login Animation
+========================================= */
+
+/* พื้นหลังเคลื่อนไหว */
+.login-page{
+    overflow:hidden;
+    position:relative;
+}
+
+.floating-elements{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+}
+
+.floating-elements span{
+    position:absolute;
+    font-size:2rem;
+    opacity:.18;
+    animation:floatUp linear infinite;
+}
+
+.floating-elements span:nth-child(1){
+    left:5%;
+    animation-duration:14s;
+}
+
+.floating-elements span:nth-child(2){
+    left:20%;
+    animation-duration:16s;
+}
+
+.floating-elements span:nth-child(3){
+    left:40%;
+    animation-duration:18s;
+}
+
+.floating-elements span:nth-child(4){
+    left:60%;
+    animation-duration:13s;
+}
+
+.floating-elements span:nth-child(5){
+    left:80%;
+    animation-duration:15s;
+}
+
+.floating-elements span:nth-child(6){
+    left:92%;
+    animation-duration:17s;
+}
+
+@keyframes floatUp{
+    from{
+        transform:translateY(120vh) rotate(0deg);
+    }
+    to{
+        transform:translateY(-150px) rotate(360deg);
+    }
+}
+
+/* กล่อง Login */
+.login-container{
+    position:relative;
+    z-index:10;
+}
+
+.login-card{
+    animation:cardPop .8s ease;
+}
+
+@keyframes cardPop{
+    0%{
+        opacity:0;
+        transform:translateY(40px) scale(.9);
+    }
+    100%{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+/* การ์ตูนครู */
+.teacher-mascot{
+    text-align:center;
+    margin-bottom:1.2rem;
+}
+
+.mascot-circle{
+    width:110px;
+    height:110px;
+    margin:auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:3.5rem;
+
+    background:linear-gradient(
+        135deg,
+        #00c6ff,
+        #0072ff
+    );
+
+    box-shadow:
+        0 10px 25px rgba(0,114,255,.25);
+
+    animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+}
+
+/* ปุ่มแบบ Premium */
+.btn{
+    position:relative;
+    overflow:hidden;
+}
+
+.btn::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-120%;
+    width:70%;
+    height:100%;
+    background:rgba(255,255,255,.3);
+    transform:skewX(-25deg);
+    transition:.8s;
+}
+
+.btn:hover::before{
+    left:150%;
+}
+
+/* Modal สวยขึ้น */
+.modal-box{
+    border-radius:24px;
+}
+
+/* Glow รอบกล่อง */
+.login-card{
+    box-shadow:
+    0 20px 40px rgba(0,114,255,.12),
+    0 0 50px rgba(0,198,255,.15);
+}
+/* จัดการกล่อง Login */
+.login-card {
+    display: flex;
+    flex-direction: column; /* เรียงบน-ล่าง */
+    align-items: center;
+    background: white;
+    padding: 2rem;
+    max-width: 400px;
+    margin: auto;
+}
+
+/* ปรับขนาดโลโก้ให้พอดี */
+.mascot-logo {
+    width: 200px;       /* ปรับขนาดตามต้องการ */
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 50%; /* ถ้าอยากให้เป็นวงกลม */
+    border: 3px solid var(--primary); /* ใส่ขอบสีสวยๆ */
+}
+
+.login-content-area {
+    width: 100%;
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ภารกิจผู้พิทักษ์คำนาม | ภาษาไทย ป.6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid rgba(0, 114, 255, 0.2);
+        }
+
+        /* หน้าเริ่มเกม และ หน้าสรุปผล */
+        .quiz-state-box {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        .quiz-state-box h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 1rem; }
+        .quiz-state-box p { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 2rem; }
+        .quiz-icon { font-size: 6rem; margin-bottom: 1.5rem; animation: bounce 2s infinite; }
+
+        /* ส่วนของคำถาม */
+        .quiz-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            padding: 1.5rem 2rem;
+            color: white;
+        }
+        .progress-container {
+            width: 100%; background: rgba(255,255,255,0.3); border-radius: 50px; height: 10px; margin-bottom: 10px; overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%; background: #fff; border-radius: 50px; width: 0%; transition: width 0.4s ease;
+        }
+        .quiz-meta { display: flex; justify-content: space-between; font-weight: 600; font-size: 1.1rem; }
+
+        .question-box { padding: 3rem 2rem; text-align: center; }
+        .question-text { font-size: 1.6rem; color: var(--text-main); margin-bottom: 2rem; font-weight: 600; }
+        
+        /* ปุ่มตัวเลือก */
+        .options-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+        }
+        .option-btn {
+            background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 1.2rem;
+            font-size: 1.1rem; font-family: 'Prompt', sans-serif; color: var(--text-main); font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .option-btn:hover:not(:disabled) {
+            background: #e0f2fe; border-color: var(--primary-light); transform: translateY(-3px);
+        }
+        .option-btn.correct { background: #dcfce7; border-color: #22c55e; color: #166534; box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
+        .option-btn.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        
+        /* กล่องเฉลย/คำอธิบาย */
+        .feedback-box {
+            margin-top: 2rem; padding: 1.5rem; border-radius: 16px; display: none; text-align: left; animation: slideUp 0.3s ease;
+        }
+        .feedback-box.success { background: #dcfce7; border-left: 5px solid #22c55e; }
+        .feedback-box.error { background: #fee2e2; border-left: 5px solid #ef4444; }
+        .feedback-title { font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+        
+        .next-btn-container { margin-top: 2rem; text-align: center; display: none; }
+
+        @media (max-width: 768px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .question-text { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">สนุกเรียน ภาษาไทย ป.6</div>
+            <ul class="nav-links">
+                <li><a href="index.html">หน้าหลัก</a></li>
+                <li><a href="nouns.html">คำนาม</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="quiz-container">
+            
+            <div id="startScreen" class="quiz-state-box">
+                <div class="quiz-icon">🛡️</div>
+                <h1>ภารกิจผู้พิทักษ์คำนาม</h1>
+                <p>มาร่วมทดสอบความรู้เรื่อง "คำนาม" ทั้ง 5 ชนิด<br>ภารกิจนี้มีทั้งหมด 10 ข้อ พร้อมแล้วไปลุยกันเลย!</p>
+                <button class="btn" onclick="startQuiz()" style="font-size: 1.2rem; padding: 1rem 3rem;">▶️ เริ่มทำภารกิจ</button>
+            </div>
+
+            <div id="quizScreen" style="display: none;">
+                <div class="quiz-header">
+                    <div class="progress-container">
+                        <div id="progressBar" class="progress-bar"></div>
+                    </div>
+                    <div class="quiz-meta">
+                        <span id="questionCountText">ข้อที่ 1 / 10</span>
+                        <span>คะแนน: <span id="scoreText">0</span></span>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <div id="questionText" class="question-text">โหลดคำถาม...</div>
+                    
+                    <div id="optionsGrid" class="options-grid">
+                        </div>
+
+                    <div id="feedbackBox" class="feedback-box">
+                        <div id="feedbackTitle" class="feedback-title"></div>
+                        <div id="feedbackText"></div>
+                    </div>
+
+                    <div id="nextBtnContainer" class="next-btn-container">
+                        <button class="btn" onclick="nextQuestion()">ข้อต่อไป ➔</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultScreen" class="quiz-state-box" style="display: none;">
+                <div id="resultIcon" class="quiz-icon">🏆</div>
+                <h1 id="resultTitle">ยอดเยี่ยมมาก!</h1>
+                <p>คุณทำภารกิจผู้พิทักษ์คำนามสำเร็จแล้ว</p>
+                <h2 style="font-size: 3rem; color: var(--text-main); margin-bottom: 2rem;">ได้คะแนน <span id="finalScore" style="color: var(--primary);">0</span> / 10</h2>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="btn-outline" onclick="location.reload()">🔄 เล่นอีกครั้ง</button>
+                    <button id="goToForeignBtn" class="btn" style="display: none;" onclick="window.location.href='quiz-foreign.html'">➡️ ไปทำแบบฝึกหัดคำต่างประเทศ</button>
+                    <button id="submitScoreBtn" class="btn" style="display: none;" onclick="submitBothScores()">📤 บันทึกคะแนนส่งครู</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const questions = [
+            { question: "วันนี้ \"ด.ช.วิชัยยศ\" แต่งตัวหล่อมาก! คำที่ขีดเส้นใต้เป็นคำนามชนิดใด?", options: ["สามานยนาม", "วิสามานยนาม", "สมุหนาม", "อาการนาม"], answer: 1, explanation: "วิสามานยนาม คือ คำนามชี้เฉพาะเจาะจง ใช้เรียกชื่อคน สถานที่ หรือสิ่งของที่มีสิ่งเดียวครับ" },
+            { question: "\"ฝูง\" นกบินกลับรังในตอนเย็น... คำว่า \"ฝูง\" ทำหน้าที่เป็นคำนามแบบไหนเอ่ย?", options: ["สมุหนาม", "ลักษณนาม", "สามานยนาม", "วิสามานยนาม"], answer: 0, explanation: "สมุหนาม คือ คำนามรวมหมู่ มักจะวางอยู่ 'หน้า' คำนามหลัก (เช่น ฝูงนก, โขลงช้าง) ครับ" },
+            { question: "\"การออกกำลังกาย\" ทำให้ร่างกายแข็งแรง... คำนี้จัดอยู่ในหมวดไหน?", options: ["อาการนาม", "สามานยนาม", "วิสามานยนาม", "สมุหนาม"], answer: 0, explanation: "อาการนาม คือ คำนามที่เกิดจากการนำคำว่า 'การ' หรือ 'ความ' มานำหน้าคำกริยาหรือคำวิเศษณ์ครับ" },
+            { question: "คุณแม่ซื้อร่มมาให้ฉัน 3 \"คัน\"... คำว่า \"คัน\" คือคำอะไร?", options: ["สมุหนาม", "สามานยนาม", "อาการนาม", "ลักษณนาม"], answer: 3, explanation: "ลักษณนาม คือ คำบอกลักษณะ มักจะวางอยู่ 'หลัง' จำนวนนับเสมอ (เช่น ร่ม 3 คัน, ปากกา 2 ด้าม) ครับ" },
+            { question: "\"โรงเรียน\" ของเราน่าอยู่ คุณครูใจดีทุกคน... คำว่า \"โรงเรียน\" เป็นคำนามชนิดใด?", options: ["วิสามานยนาม", "สมุหนาม", "สามานยนาม", "ลักษณนาม"], answer: 2, explanation: "สามานยนาม คือ คำนามทั่วไป ไม่ได้เจาะจงว่าเป็นโรงเรียนชื่ออะไรครับ" },
+            { question: "ช้างป่า 1 \"โขลง\" เดินข้ามถนน... คำว่า \"โขลง\" เป็นคำนามชนิดใด?", options: ["สามานยนาม", "ลักษณนาม", "สมุหนาม", "วิสามานยนาม"], answer: 2, explanation: "ถึงแม้จะอยู่หลังจำนวนนับ แต่ 'โขลง' ใช้เรียกกลุ่มของช้าง จึงจัดเป็น สมุหนาม (คำนามรวมหมู่) ครับ" },
+            { question: "\"ความรัก\" เอาชนะได้ทุกสิ่ง... คำว่า \"ความรัก\" เป็นคำนามชนิดใด?", options: ["อาการนาม", "สมุหนาม", "สามานยนาม", "วิสามานยนาม"], answer: 0, explanation: "มีคำว่า 'ความ' นำหน้าคำวิเศษณ์ (รัก) จึงจัดเป็น อาการนาม ครับ" },
+            { question: "ฉันชอบไปเที่ยวที่ \"จังหวัดเชียงใหม่\"... คำว่า \"จังหวัดเชียงใหม่\" เป็นคำนามชนิดใด?", options: ["สามานยนาม", "ลักษณนาม", "อาการนาม", "วิสามานยนาม"], answer: 3, explanation: "เพราะมีการระบุชื่อจังหวัดชัดเจนเจาะจงลงไป จึงเป็น วิสามานยนาม ครับ" },
+            { question: "คุณพ่อขับ \"รถยนต์\" ไปทำงานทุกวัน... คำว่า \"รถยนต์\" เป็นคำนามชนิดใด?", options: ["สามานยนาม", "วิสามานยนาม", "สมุหนาม", "ลักษณนาม"], answer: 0, explanation: "รถยนต์ เป็นคำเรียกสิ่งของทั่วๆ ไป ไม่ได้เจาะจงยี่ห้อหรือทะเบียน จึงเป็น สามานยนาม ครับ" },
+            { question: "ภิกษุ 5 \"รูป\" กำลังบิณฑบาตตอนเช้า... คำว่า \"รูป\" เป็นคำนามชนิดใด?", options: ["อาการนาม", "ลักษณนาม", "สมุหนาม", "สามานยนาม"], answer: 1, explanation: "ลักษณนามใช้บอกลักษณะของคำนาม วางหลังตัวเลข ในที่นี้ 'รูป' เป็นลักษณนามของพระภิกษุครับ" }
+        ];
+
+        let currentQuestion = 0; let score = 0;
+        const startScreen = document.getElementById('startScreen'); const quizScreen = document.getElementById('quizScreen'); const resultScreen = document.getElementById('resultScreen');
+        const questionText = document.getElementById('questionText'); const optionsGrid = document.getElementById('optionsGrid');
+        const feedbackBox = document.getElementById('feedbackBox'); const feedbackTitle = document.getElementById('feedbackTitle'); const feedbackText = document.getElementById('feedbackText');
+        const nextBtnContainer = document.getElementById('nextBtnContainer'); const progressBar = document.getElementById('progressBar');
+        const questionCountText = document.getElementById('questionCountText'); const scoreText = document.getElementById('scoreText');
+
+        function startQuiz() { startScreen.style.display = 'none'; quizScreen.style.display = 'block'; loadQuestion(); }
+        
+        function loadQuestion() {
+            const q = questions[currentQuestion]; questionText.innerText = q.question;
+            questionCountText.innerText = `ข้อที่ ${currentQuestion + 1} / ${questions.length}`;
+            progressBar.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+            optionsGrid.innerHTML = ''; feedbackBox.style.display = 'none'; nextBtnContainer.style.display = 'none';
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn); optionsGrid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            const q = questions[currentQuestion]; const allBtns = optionsGrid.querySelectorAll('.option-btn');
+            allBtns.forEach(btn => btn.disabled = true);
+            if (selectedIndex === q.answer) {
+                btnElement.classList.add('correct'); score++; scoreText.innerText = score;
+                feedbackBox.className = 'feedback-box success'; feedbackTitle.innerHTML = '✅ ถูกต้องครับเก่งมาก!';
+            } else {
+                btnElement.classList.add('wrong'); allBtns[q.answer].classList.add('correct');
+                feedbackBox.className = 'feedback-box error'; feedbackTitle.innerHTML = '❌ ผิดไปนิดเดียวนะครับ';
+            }
+            feedbackText.innerText = q.explanation; feedbackBox.style.display = 'block'; nextBtnContainer.style.display = 'block';
+            if(currentQuestion === questions.length - 1) { progressBar.style.width = '100%'; }
+        }
+
+        function nextQuestion() {
+            currentQuestion++; if (currentQuestion < questions.length) { loadQuestion(); } else { showResult(); }
+        }
+
+        function showResult() {
+            quizScreen.style.display = 'none'; resultScreen.style.display = 'block';
+            document.getElementById('finalScore').innerText = score;
+            
+            // 🌟 1. บันทึกคะแนนของวิชานี้ไว้ในเครื่อง
+            localStorage.setItem('scoreNoun', score);
+            localStorage.setItem('isNounDone', 'true');
+
+            // 🌟 2. ระบบเช็กว่าทำวิชาต่างประเทศหรือยัง?
+            if (localStorage.getItem('isForeignDone') === 'true') {
+                // ถ้าทำครบแล้ว ➔ โชว์ปุ่มส่งคะแนนให้ครู
+                document.getElementById('submitScoreBtn').style.display = 'inline-block';
+            } else {
+                // ถ้ายังไม่ทำ ➔ โชว์ปุ่มบังคับไปทำอีกวิชา
+                document.getElementById('goToForeignBtn').style.display = 'inline-block';
+            }
+            
+            const title = document.getElementById('resultTitle'); const icon = document.getElementById('resultIcon');
+            if (score >= 8) { title.innerText = "🌟 สุดยอดอัจฉริยะ!"; icon.innerText = "🏆"; } 
+            else if (score >= 5) { title.innerText = "👍 เก่งมากครับ ทำได้ดี!"; icon.innerText = "⭐"; } 
+            else { title.innerText = "💪 พยายามอีกนิดนะ ฮึบๆ!"; icon.innerText = "📚"; }
+        }
+
+        // 🌟 เปลี่ยนเป็น URL ของคุณวิชัยยศ
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzxQw8OsLmQrsnF17BR_FBvHGSd8mK8dhFZC6ECLA5eAg3fcoDTLP15IPvpQheuPnUU2g/exec';
+
+        function submitBothScores() {
+            const btn = document.getElementById('submitScoreBtn');
+            btn.innerText = 'กำลังส่งคะแนน...'; btn.disabled = true;
+
+            const name = localStorage.getItem('studentName') || 'ไม่ได้ล็อกอิน';
+            const room = localStorage.getItem('studentRoom') || '-';
+            const number = localStorage.getItem('studentNumber') || '-';
+            // ดึงคะแนนทั้ง 2 วิชาที่ซ่อนไว้
+            const scoreN = localStorage.getItem('scoreNoun') || '0';
+            const scoreF = localStorage.getItem('scoreForeign') || '0';
+
+            const formData = new FormData();
+            formData.append('name', name); formData.append('room', room); formData.append('number', number);
+            formData.append('quizName', '🎯 ทำแบบฝึกหัดครบ 2 บท');
+            formData.append('scoreNoun', scoreN); // ส่งคะแนนคำนาม
+            formData.append('scoreForeign', scoreF); // ส่งคะแนนต่างประเทศ
+
+            fetch(GOOGLE_SHEET_URL, { method: 'POST', body: formData, mode: 'no-cors' })
+            .then(() => {
+                btn.innerText = '✅ ส่งคะแนนสำเร็จ!'; btn.style.background = '#16a34a'; btn.style.borderColor = '#16a34a';
+                
+                // ล้างข้อมูลเพื่อให้นักเรียนคนต่อไปมาเล่นใหม่ได้
+                localStorage.removeItem('isNounDone'); localStorage.removeItem('isForeignDone');
+            })
+            .catch(() => {
+                alert('ส่งคะแนนไม่สำเร็จ กรุณาลองใหม่'); btn.innerText = '📤 บันทึกคะแนนส่งครู'; btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
+    </script>
+</body>
+</html>

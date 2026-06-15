@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ | ห้องเรียนภาษาไทย ป.6</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+
+    <div class="login-container">
+        <div class="login-card">
+            
+            <div class="teacher-mascot">
+                <img src="รร.png" alt="โลโก้โรงเรียน" class="mascot-logo">
+            </div>
+            
+            <div class="login-content-area">
+                <div class="login-header">
+                    <h2>👋 ยินดีต้อนรับนักเรียน!</h2>
+                    <p>กรุณากรอกข้อมูลเพื่อเข้าสู่ห้องเรียนภาษาไทย ป.6</p>
+                </div>
+                
+                <form id="loginForm" name="loginForm">
+                    <div class="input-group">
+                        <label for="studentName">ชื่อ - นามสกุล</label>
+                        <input type="text" id="studentName" name="name" placeholder="ด.ช. / ด.ญ. ..." required>
+                    </div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="studentRoom">ห้อง ป.6/</label>
+                            <select id="studentRoom" name="room" required>
+                                <option value="" disabled selected>เลือกห้อง</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="studentNumber">เลขที่</label>
+                            <input type="number" id="studentNumber" name="number" min="1" placeholder="เช่น 15" required>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-full" onclick="showConfirmModal()">เข้าสู่หน้าเนื้อหา ➔</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">🔍</div>
+            <h3>ตรวจสอบข้อมูลก่อนเข้าเรียน</h3>
+            <div class="confirm-details">
+                <p><strong>ชื่อ:</strong> <span id="confirmName"></span></p>
+                <p><strong>ห้อง:</strong> ป.6/<span id="confirmRoom"></span></p>
+                <p><strong>เลขที่:</strong> <span id="confirmNumber"></span></p>
+            </div>
+            <p class="modal-warning">ข้อมูลถูกต้องไหมเอ่ย?</p>
+            <div class="modal-actions">
+                <button class="btn-outline" onclick="closeModal()">กลับไปแก้ไข</button>
+                <button class="btn" id="submitBtn" onclick="submitData()">ถูกต้อง ยืนยันเลย!</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-elements">
+        <span>📚</span>
+        <span>✏️</span>
+        <span>🎒</span>
+        <span>📝</span>
+        <span>🌟</span>
+        <span>📖</span>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzxQw8OsLmQrsnF17BR_FBvHGSd8mK8dhFZC6ECLA5eAg3fcoDTLP15IPvpQheuPnUU2g/exec'; 
+
+        const form = document.forms['loginForm'];
+        const modal = document.getElementById('confirmModal');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showConfirmModal() {
+            if (!form.reportValidity()) return;
+            document.getElementById('confirmName').innerText = document.getElementById('studentName').value;
+            document.getElementById('confirmRoom').innerText = document.getElementById('studentRoom').value;
+            document.getElementById('confirmNumber').innerText = document.getElementById('studentNumber').value;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        function submitData() {
+            submitBtn.innerText = 'กำลังบันทึก...';
+            submitBtn.disabled = true;
+
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: new FormData(form),
+                mode: 'no-cors' 
+            })
+            .then(() => {
+                window.location.href = 'index.html';
+            })
+            .catch(error => {
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่ครับ');
+                submitBtn.innerText = 'ถูกต้อง ยืนยันเลย!';
+                submitBtn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>

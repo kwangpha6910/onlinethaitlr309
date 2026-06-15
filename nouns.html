@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บทเรียนเรื่อง คำนาม | ภาษาไทย ป.6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">สนุกเรียน ภาษาไทย ป.6</div>
+            <ul class="nav-links">
+                <li><a href="index.html">หน้าหลัก</a></li>
+                <li><a href="nouns.html" class="active">คำนาม</a></li>
+                <li><a href="foreign-words.html">คำภาษาต่างประเทศ</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container lesson-content">
+        <h1>บทเรียนที่ ๑: รู้จัก "คำนาม"</h1>
+        <p class="intro-text">คำนาม คือ คำที่ใช้เรียกชื่อคน สัตว์ สิ่งของ สถานที่ และอาการต่างๆ แบ่งออกเป็น 5 ชนิด ได้แก่</p>
+        
+        <div class="content-box">
+            <h3>1. สามานยนาม (คำนามทั่วไป)</h3>
+            <p>ใช้เรียกสิ่งต่างๆ ทั่วไป ไม่เจาะจง เช่น <strong>นักเรียน, แมว, โรงเรียน, ดินสอ</strong></p>
+        </div>
+        <div class="content-box">
+            <h3>2. วิสามานยนาม (คำนามชี้เฉพาะ)</h3>
+            <p>ใช้เรียกชื่อเฉพาะเจาะจงของคน สัตว์ สิ่งของ หรือสถานที่ เช่น <strong>โรงเรียนสตรีวิทยา, จังหวัดเชียงใหม่, วันจันทร์</strong></p>
+        </div>
+        <div class="content-box">
+            <h3>3. สมุหนาม (คำนามรวมหมู่)</h3>
+            <p>คำที่แสดงหมวดหมู่ มักอยู่หน้าคำนาม เช่น <strong>ฝูง</strong>นก, <strong>โขลง</strong>ช้าง, <strong>คณะ</strong>ครู</p>
+        </div>
+        <div class="content-box">
+            <h3>4. ลักษณนาม (คำนามบอกลักษณะ)</h3>
+            <p>ใช้บอกลักษณะของคำนาม มักอยู่หลังจำนวนนับ เช่น รถ 1 <strong>คัน</strong>, ปากกา 2 <strong>ด้าม</strong></p>
+        </div>
+        <div class="content-box">
+            <h3>5. อาการนาม (คำนามแสดงอาการ)</h3>
+            <p>คำนามที่เกิดจากการนำคำว่า "การ" หรือ "ความ" นำหน้าคำกริยาหรือคำวิเศษณ์ เช่น <strong>การ</strong>เรียน, <strong>ความ</strong>ดี</p>
+        </div>
+        
+        <div class="navigation-buttons">
+            <a href="index.html" class="btn-outline">กลับหน้าหลัก</a>
+            <a href="foreign-words.html" class="btn">เรียนบทต่อไป ➔</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 สื่อการเรียนรู้ออนไลน์ วิชาภาษาไทย ชั้นประถมศึกษาปีที่ 6</p>
+    </footer>
+    <script src="script.js"></script>
+
+    <audio id="lessonAudio" src="Generated Audio June 15, 2026 - 3_34PM.wav" preload="auto"></audio>
+
+    <div id="welcomeModal" class="modal-overlay" style="display: none; z-index: 9999;">
+        <div class="modal-box">
+            <div class="modal-icon">🎧</div>
+            <h3>ยินดีต้อนรับสู่บทเรียนที่ ๑</h3>
+            
+            <p id="audioStatusText" style="margin-bottom: 1.5rem; color: var(--text-muted); font-size: 1.1rem;">
+                กำลังเตรียมเสียงอธิบาย...
+            </p>
+            
+            <div id="modalActions" class="modal-actions" style="justify-content: center;">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('lessonAudio');
+            const welcomeModal = document.getElementById('welcomeModal');
+            const statusText = document.getElementById('audioStatusText');
+            const modalActions = document.getElementById('modalActions');
+            
+            // เช็คว่าเคยฟังผ่านไปแล้วหรือยังในรอบนี้ (เปลี่ยนตัวจำค่าเป็นของบทที่ 1)
+            if (!sessionStorage.getItem('played_lesson_1_audio')) {
+                
+                // เปิดกล่องต้อนรับขึ้นมาบังหน้าจอ
+                welcomeModal.style.display = 'flex';
+                
+                // สร้างปุ่ม "เข้าสู่บทเรียน" เตรียมไว้ (แต่ซ่อนไว้ก่อน)
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'btn';
+                closeBtn.innerHTML = '✅ เข้าสู่บทเรียน ➔';
+                closeBtn.style.display = 'none'; // ซ่อนไว้
+                closeBtn.style.width = '100%';
+                closeBtn.onclick = function() {
+                    sessionStorage.setItem('played_lesson_1_audio', 'true');
+                    welcomeModal.style.display = 'none'; // ปิดกล่อง
+                };
+                modalActions.appendChild(closeBtn);
+
+                // เมื่อไฟล์เสียงเล่นจบ (สำคัญมาก!)
+                audio.onended = function() {
+                    statusText.innerHTML = "<span style='color: var(--primary); font-weight: 600;'>🎉 ฟังจบแล้ว! เก่งมากครับ</span>";
+                    // โชว์ปุ่มให้กดเข้าเรียนได้
+                    closeBtn.style.display = 'block';
+                };
+
+                // ลองสั่งเล่นเสียงอัตโนมัติ
+                let playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // เล่นเสียงอัตโนมัติสำเร็จ
+                        statusText.innerHTML = "🔊 กำลังอธิบายบทเรียน...<br><small style='color: var(--accent);'>(กรุณาฟังให้จบก่อนเข้าเรียน)</small>";
+                    })
+                    .catch(error => {
+                        // บราวเซอร์บล็อกเสียงอัตโนมัติ ต้องให้นักเรียนกดปุ่มเอง
+                        statusText.innerHTML = "⚠️ บราวเซอร์จำกัดการเล่นเสียงอัตโนมัติ<br>กรุณากดปุ่มด้านล่างเพื่อเริ่มฟังครับ";
+                        
+                        const playBtn = document.createElement('button');
+                        playBtn.className = 'btn-outline';
+                        playBtn.innerHTML = '▶️ กดเพื่อเริ่มฟังอธิบาย';
+                        playBtn.style.width = '100%';
+                        
+                        playBtn.onclick = function() {
+                            audio.play();
+                            playBtn.style.display = 'none'; // ซ่อนปุ่มเริ่มฟัง
+                            statusText.innerHTML = "🔊 กำลังอธิบายบทเรียน...<br><small style='color: var(--accent);'>(กรุณาฟังให้จบก่อนเข้าเรียน)</small>";
+                        };
+                        
+                        modalActions.appendChild(playBtn);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
