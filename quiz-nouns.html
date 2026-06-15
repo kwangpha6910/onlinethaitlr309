@@ -203,8 +203,9 @@
             document.getElementById('finalScore').innerText = score;
             
             // 🌟 1. บันทึกคะแนนของวิชานี้ไว้ในเครื่อง
-            localStorage.setItem('scoreNoun', score);
-            localStorage.setItem('isNounDone', 'true');
+            // เปลี่ยน localStorage เป็น sessionStorage
+            sessionStorage.setItem('scoreNoun', score);
+            sessionStorage.setItem('isNounDone', 'true'); // หรือ isForeignDone
 
             // 🌟 2. ระบบเช็กว่าทำวิชาต่างประเทศหรือยัง?
             if (localStorage.getItem('isForeignDone') === 'true') {
@@ -228,12 +229,14 @@
             const btn = document.getElementById('submitScoreBtn');
             btn.innerText = 'กำลังส่งคะแนน...'; btn.disabled = true;
 
-            const name = localStorage.getItem('studentName') || 'ไม่ได้ล็อกอิน';
-            const room = localStorage.getItem('studentRoom') || '-';
-            const number = localStorage.getItem('studentNumber') || '-';
-            // ดึงคะแนนทั้ง 2 วิชาที่ซ่อนไว้
-            const scoreN = localStorage.getItem('scoreNoun') || '0';
-            const scoreF = localStorage.getItem('scoreForeign') || '0';
+            // เปลี่ยน localStorage เป็น sessionStorage
+            const name = sessionStorage.getItem('studentName') || 'ไม่ได้ล็อกอิน';
+            const room = sessionStorage.getItem('studentRoom') || '-';
+            const number = sessionStorage.getItem('studentNumber') || '-';
+            const scoreN = sessionStorage.getItem('scoreNoun') || '0';
+            const scoreF = sessionStorage.getItem('scoreForeign') || '0';
+
+// ... (fetch code ต่อไปตามปกติ)
 
             const formData = new FormData();
             formData.append('name', name); formData.append('room', room); formData.append('number', number);
