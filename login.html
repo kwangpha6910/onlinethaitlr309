@@ -99,10 +99,10 @@
             submitBtn.disabled = true;
 
             // 🌟 บันทึกข้อมูลนักเรียนลงใน Browser เพื่อให้หน้าเว็บอื่นตรวจเช็คได้
-            localStorage.setItem('studentName', document.getElementById('studentName').value);
-            localStorage.setItem('studentRoom', document.getElementById('studentRoom').value);
-            localStorage.setItem('studentNumber', document.getElementById('studentNumber').value);
-
+            sessionStorage.setItem('studentName', document.getElementById('studentName').value);
+            sessionStorage.setItem('studentRoom', document.getElementById('studentRoom').value);
+            sessionStorage.setItem('studentNumber', document.getElementById('studentNumber').value);
+            
             fetch(scriptURL, { 
                 method: 'POST', 
                 body: new FormData(form),
