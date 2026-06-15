@@ -2,21 +2,12 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <script>
-    // เช็คเมื่อโหลดหน้าเว็บเสร็จสมบูรณ์เท่านั้น เพื่อไม่ให้ขัดจังหวะบราวเซอร์
-    window.onload = function() {
-        if (!sessionStorage.getItem('studentName')) {
-            window.location.replace('login.html');
-        }
-    };
-</script>
-</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ห้องเรียนภาษาไทย ป.6 | หน้าหลัก</title>
     <link rel="stylesheet" href="style.css">
 
     <script>
-        if (!localStorage.getItem('studentName')) {
+        if (!sessionStorage.getItem('studentName')) {
             window.location.href = 'login.html';
         }
     </script>
