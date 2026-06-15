@@ -94,23 +94,25 @@
             modal.style.display = 'none';
         }
 
-        function submitData() {
+      function submitData() {
             submitBtn.innerText = 'กำลังบันทึก...';
             submitBtn.disabled = true;
 
-            // 🌟 บันทึกข้อมูลนักเรียนลงใน Browser เพื่อให้หน้าเว็บอื่นตรวจเช็คได้
+            // บันทึกข้อมูล
             sessionStorage.setItem('studentName', document.getElementById('studentName').value);
             sessionStorage.setItem('studentRoom', document.getElementById('studentRoom').value);
             sessionStorage.setItem('studentNumber', document.getElementById('studentNumber').value);
-            
+
             fetch(scriptURL, { 
                 method: 'POST', 
                 body: new FormData(form),
                 mode: 'no-cors' 
             })
             .then(() => {
-                // หลังจากบันทึกสำเร็จ ให้ไปที่หน้า index.html
-                window.location.href = 'index.html'; 
+                // 🌟 แก้ตรงนี้: ใส่ setTimeout เพื่อให้เวลาเครื่องบันทึกข้อมูลก่อนเด้ง
+                setTimeout(() => {
+                    window.location.href = 'index.html'; 
+                }, 300); // รอ 300 มิลลิวินาที (แป๊บเดียวแต่ชัวร์)
             })
             .catch(error => {
                 alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่ครับ');
