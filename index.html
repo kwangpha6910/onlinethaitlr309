@@ -2,6 +2,11 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <script>
+        if (!localStorage.getItem('studentName')) {
+            window.location.href = 'login.html';
+        }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ห้องเรียนภาษาไทย ป.6 | หน้าหลัก</title>
     <link rel="stylesheet" href="style.css">
